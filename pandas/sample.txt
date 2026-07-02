@@ -1,0 +1,10 @@
+This is to test if we are able to access the file via the Github repository.
+Github helps team members to collaborate by sharing their artifacts  like:
+- code (python files,...)
+- data
+- installation steps
+- test cases
+- BRD
+- Technical documents
+- READMe - what is the project about
+...
