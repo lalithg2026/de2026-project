@@ -1,0 +1,69 @@
+-- I. GROUP BY -- SUMMARY information. Statistics. 
+--             Categorize/sub-categorize
+-- order by -- no loss of data (i.e. all rows present)
+-- group by -- there is loss of data (summary info will be less than the actual no of rows)
+
+--  1. Find the number of customers in each city.
+SELECT city, COUNT(*) AS customer_count
+FROM customers
+GROUP BY city;
+
+use de_db;
+-- SELECT count(*) FROM customers order by city; -- 30
+-- select * from customers where customer_id = 1; -- Chicago
+-- UPDATE customers set city='Chicago'  where customer_id = 1; -- Expected:Chicago. Actual: CHICAGO
+
+SELECT * FROM customers order by city; -- SORTING - re-arrange of rows/records
+SELECT city, COUNT(*) AS customer_count FROM customers group by city; -- group by = sorting + grouping function
+
+--  2. Find the number of customers grouped by state and city.
+SELECT state, city, COUNT(*) AS customer_count
+FROM customers
+GROUP BY state, city;
+
+--  3. Find the total transaction amount for each customer.
+SELECT customer_id, SUM(amount) AS total_amount
+FROM transactions
+GROUP BY customer_id;
+
+--  4. Find the count of transactions for each payment method.
+SELECT payment_method, COUNT(*) AS txn_count
+FROM transactions
+GROUP BY payment_method;
+
+--  5. Find the number of transactions grouped by status.
+SELECT status, COUNT(*) AS txn_count
+FROM transactions
+GROUP BY status;
+
+--  6. Find the average transaction amount for each payment method.
+SELECT payment_method, AVG(amount) AS avg_amount, SUM(amount) AS total_amount, COUNT(*) AS txn_count
+FROM transactions
+GROUP BY payment_method;
+
+--  7. Find the highest transaction amount for each customer.
+SELECT customer_id, MAX(amount) AS max_amount
+FROM transactions
+GROUP BY customer_id;
+
+--  8. Find the number of customers who signed up in each month of 2023.
+SELECT DATE_FORMAT(signup_date, '%Y-%m') AS signup_month,
+       COUNT(*) AS customer_count
+FROM customers
+GROUP BY DATE_FORMAT(signup_date, '%Y-%m')
+-- order by signup_month;
+order by 1;
+
+-- select *,  year(signup_date),  month(signup_date), date_format(signup_date, '%Y-%m') FROM customers;
+
+--  9. Find the total transaction amount grouped by customer city.
+				SELECT c.city, SUM(t.amount) AS total_amount
+				FROM customers c
+				JOIN transactions t ON c.customer_id = t.customer_id
+				GROUP BY c.city;
+--  10. Find the count of transactions per customer state.
+
+SELECT c.state, COUNT(t.txn_id) AS txn_count
+FROM customers c
+JOIN transactions t ON c.customer_id = t.customer_id
+GROUP BY c.state;
