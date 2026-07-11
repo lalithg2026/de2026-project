@@ -1,0 +1,99 @@
+-- II. JOINS: Inner, Left, Right
+-- 2.1. INNER JOIN(JOIN) :-
+-- Mathing records
+-- Getting Additional data from another table as well. table1  + table2 COLUMNs as a SINGLE table.
+-- E.g. Bring CUSTOMERS what transaction(s) they did. NOTE_1: ***Atleast ONE transaction.***
+--      NOTE_2: If a customer made no transactio, Do NOT show in the report.
+--      NOTE_3: If a customer made 3 txns, Show 3 rows/entries.
+--      NOTE_4: There can be LOSS of Data -- if there is No matching info in second table.
+--      NOTE_5: After INNER Join: we may have SAME or Less or More rows than the TABLE_1(customer)
+--           SAME: Each cust made one txn
+--           MORE: Some cust made more than one txn
+--           LESS: Afew customers did not make any txn, after INNER JOIN, their data is not shown.
+--      NOTE_6: If we DO NOT put 'ON' during JOIN --> it does a CROSS JOIN. Its a bad practice to do a cross join. 
+
+-- 2.2. LEFT Join: Having all the rows from Table1(customer) + data from Table2 (or) null -- if no matching
+use de_db;
+
+-- 1. Get all customers who have made at least one transaction (INNER JOIN).
+SELECT c.customer_id, c.first_name, c.last_name, t.txn_id, t.amount
+FROM customers c INNER JOIN transactions t
+    ON c.customer_id = t.customer_id;
+    
+-- select  c.*,t.* from customers c 
+-- INNER JOIN transactions t 
+-- ON c.customer_id = t.customer_id
+-- order by 1;
+    
+-- 2. List all customers and their transactions, including customers with no transactions (LEFT JOIN).
+-- LEFT JOIN -- is same as INNER JOIN PLUS additional data.
+-- Can you make the LEFT JOIN -> Inner Join
+SELECT c.customer_id, c.first_name, c.last_name, t.txn_id, t.amount
+FROM customers c
+LEFT JOIN transactions t
+    ON c.customer_id = t.customer_id
+where t.txn_id is  null
+order by 1;
+
+-- Data Quality: COUNT: 30 rows(customers). After join -> Did all the data (30 distinct cust_id) arrive or did we miss some thing.
+-- RCA - Root Cause Analysis.
+-- Inner join: 25 rows came -- Matching cust_id
+-- Left Join: Show t.cust_id is NULL -- 5 rows (t.cust_id is NULL)
+    
+-- 3. Find customers who have no transactions (LEFT JOIN + NULL filter).
+SELECT c.customer_id, c.first_name, c.last_name
+FROM customers c
+LEFT JOIN transactions t
+    ON c.customer_id = t.customer_id
+WHERE t.txn_id IS NULL;
+
+-- 4. Count number of transactions per customer (JOIN + GROUP BY).
+SELECT c.customer_id, c.first_name, COUNT(t.txn_id) AS txn_count 
+FROM customers c
+LEFT JOIN transactions t
+    ON c.customer_id = t.customer_id
+GROUP BY c.customer_id, c.first_name;
+
+-- 5. Get total transaction amount per customer (JOIN + SUM).
+SELECT c.customer_id, c.first_name, SUM(t.amount) AS total_amount
+FROM customers c
+JOIN transactions t
+    ON c.customer_id = t.customer_id
+GROUP BY c.customer_id, c.first_name;
+
+-- 6. Find customers who have at least one FAILED transaction.
+SELECT DISTINCT c.customer_id, c.first_name, c.last_name
+FROM customers c
+JOIN transactions t
+    ON c.customer_id = t.customer_id
+WHERE t.status = 'Failed';
+
+-- 7. Get each customer’s latest transaction date.
+SELECT c.customer_id, c.first_name, MAX(t.txn_date) AS latest_txn
+FROM customers c
+JOIN transactions t
+    ON c.customer_id = t.customer_id
+GROUP BY c.customer_id, c.first_name;
+
+-- 8. List customers from Phoenix and their transactions (JOIN + WHERE).
+-- Order of Execution: Select -> 1. WHERE 2. Group by 3. Having 4. Order by
+-- WHERE == Predicate
+SELECT c.customer_id, c.first_name, c.city, t.txn_id, t.amount
+FROM customers c
+JOIN transactions t
+    ON c.customer_id = t.customer_id
+WHERE c.city = 'Phoenix';
+
+-- 9. Get total transaction amount grouped by customer state (JOIN + GROUP BY).
+SELECT c.state, SUM(t.amount) AS total_amount
+FROM customers c
+JOIN transactions t
+    ON c.customer_id = t.customer_id
+GROUP BY c.state;
+
+-- 10. Show each payment method and the customers who used it.
+SELECT t.payment_method, c.customer_id, c.first_name, t.amount
+FROM transactions t
+JOIN customers c
+    ON t.customer_id = c.customer_id
+ORDER BY t.payment_method;
