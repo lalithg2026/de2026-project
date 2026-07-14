@@ -1,0 +1,103 @@
+1.Languages:
+	Python - Core Python - Programming
+	Pandas - Data Analysis - ETL + Analysis
+		- Data Frames(DF)
+		- One Machine/Node/System
+		
+	SQL
+
+2.API
+
+3. PySpark : Python + Spark
+	- Distributed Programming
+	- Distributed Frame work: Spark 
+	- Language: Scala, Java, Python
+	
+Two heads are better than One
+
+Distributed: in PARALLEL
+	- Divide the work among people
+	- Divide the work in to smaller tasks
+########### SPARK - Framework #############
+100 pages - 10 hours (1 person)
+100 pages - 2 hours (1 person) -- in parallel ( NOT in SEQUENCE).
+	PERFORMANCE - SPEED.
+	THROUGHPUT is FAST
+Step_1:
+	10 people - each took 10 pages(CSV) - 2 HOURS
+	10 chunks - each chunk(10 pages) -> to each Person
+#############################
+1. Data:
+#############################
+
+
+#############################
+2. Program: # that reads the csv and does ETL and generates the needed output.
+	OUTPUT: Summary : Group by
+#############################
+	- Shared the SAME prog on individual machine.
+	
+	
+Distributed : Shared: Data + Program/Code
+
+Step_2:
+	--> Receive the individual output from Each person for their CHUNK
+	
+	#############################
+	Person1: 1-10  (relative data/partial data) -> summary info from chunk1
+	Person2: 11-20 (relative data/partial data) -> summary info from chunk2
+	...
+	Person10: 91-100(relative data/partial data) -> -> summary info from chunk10
+	#############################
+	
+	
+	--> Collate the 10 rows and SUMMARIZE
+		cust1 : 150 + 50 + 150 = 300
+	
+###########################################
+Cloud/Big Data: 
+	- Lot of machines for that COMPANY (LAN, WAN, INTERNET)
+	- installed spark, scala, java, python ... 
+	- Programs since you installed SPARK:
+		- programs work like people
+		
+	-> 10 people/ 10 machines
+		- to each person/machine (spark,...)
+		- copy the data to each machine (each chunk)
+		- copy the code to each machine
+		
+###########################################		
+	BATCH processing : Big Data (Cloudera, Hortonworks)
+	In-Memory process: Spark ( Performance)
+###########################################
+
+
+Spark: Software ware installed on FAMILY of machines(CLUSTER)
+Show the machines physically : ON-Premise (Buy)
+Show the machines Virtually  : CLOUD      (Rent)
+
+
+How to write a PySpark program:
+	- RDD (Resilient Distributed DataSet)
+		- Resilient: 
+		- Distributed : Data + Code (shared in the cluster)
+		- DataSet: csv, json, yaml, xml, parquet, orc,....
+	- DF  (Data Frame)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
