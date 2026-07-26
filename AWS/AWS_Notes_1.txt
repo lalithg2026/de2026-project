@@ -1,0 +1,113 @@
+############ 1. Cloud Services - AWS ####
+AWS: (Azure, GCP)
+Each service can have One or more TASKS/Functions
+
+1. STORAGE: S3
+	- Database
+	- Folder
+	- API
+	
+2. COMPUTE: AWS Lambda ( <= 15 mins)
+	- Server; Serverless(I donot have to create/Spin up/provisioned the server manually) 
+	- Process/workflows/job/Code gets exectued(UI/Front End; Back end; API;....)
+	- python and pandas only (Not pyspark)
+	
+3. IAM: Identity Access Management (AWS Admin or DevOps Team)
+		Identity: credentials/tokens/ssh keys
+		Access: permsssions - via RBAC - Role based Access Control - Grant/Revoke access.
+		Management: Grant/Revoke access. Creating Roles/Users/Groups....
+	
+4. CloudWatch - Server logs
+	- All the services make use of the logs generated and stored in the CloudWatch
+	
+5. Glue: ETL, pyspark, analytics (Any BATCH processing - Huge data)
+	- Adhoc     - Manually run the job
+	- Scheduled - run daily at so and so time. (crontab)
+	5.1. How to create a database in 'Data Catalog'
+		Data Catalog -> Databases -> 'de_jul_2026_db'
+	
+	5.2. Glue Crawler:  Program already present which can scan the data and create a TABLE for you.
+		- Src file; Target DB; Target Table; How understand the source data (comma, pipe separated,....)
+		
+		Data Catalog -> Crawlers -> 'csv_crawler_suleman'
+		## DDL - How the table got created. Create Statement. Command:
+		SHOW CREATE TABLE `suleman_tbl_data`;
+# OUTPUT: -		
+CREATE EXTERNAL TABLE `suleman_tbl_data`(
+  `id` bigint, 
+  `name` string, 
+  `department` string, 
+  `salary` bigint)
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY ',' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  's3://de-kaizen-jul-2026/data/'
+TBLPROPERTIES (
+  'CRAWL_RUN_ID'='813ad099-be9b-485b-87ec-252605aa6f6f', 
+  'CrawlerSchemaDeserializerVersion'='1.0', 
+  'CrawlerSchemaSerializerVersion'='1.0', 
+  'UPDATED_BY_CRAWLER'='csv_crawler_suleman', 
+  'areColumnsQuoted'='false', 
+  'averageRecordSize'='27', 
+  'classification'='csv', 
+  'columnsOrdered'='true', 
+  'compressionType'='none', 
+  'delimiter'=',', 
+  'objectCount'='1', 
+  'recordCount'='6', 
+  'sizeKey'='178', 
+  'skip.header.line.count'='1', 
+  'typeOfData'='file')
+
+External Table:If you delete/drop the table the S3 content is still there.
+Internal Table: If you do not use 'External' while creating a table, its INTENAL table.
+	If you delete/drop the table the S3 content is lost/
+# HIVE(Big data) database. Side note.
+
+5.2. GLUE ETL: pyspark code:--- ( ETL JOB/Workflow/Pipeline/Process )
+AWS Glue -> ETL jobs -> 
+#############################
+
+
+
+
+
+6. Athena. ex. Database table content can be queried.
+	# Amazon Athena is an interactive query service that makes it easy to analyze data in Amazon S3 and other federated data sources using standard SQL.
+	- Query the data from the S3 file - from an External table.
+
+	
+############ 2. ROLES - CICD - Github #######################
+Developers/Data Analyst/DS/ML/AI/Reporting - Script/Code(1 file, .zip/.jar,.tar) 
+	- Copy the .zip compressed file to the server (DEPLOYMENT)
+
+DevOps: DEPLOYMENT : -> Environmets : Dev, Test, Pre_Prod, Production.
+	Local code (Files) - versions) - v1,v2, 
+		Github/bitbucket/.... CODE Repository -> Github SERVER
+	- Setup for CICD **** CONTINOUS INGEGRATION CONTINOUS DEPLOYMENT ****
+		1. Write code(dev); Test Cases(testing) # Fail Fast approach. Manual/Automated
+			-> Github (Dev Env)
+				# Add my code changes into existing code repo. (CI)
+				-> Github Actions (auto run all the test cases)
+				-> if successful -> then deploy to TEST env
+				   # Parameters/credentials - should NOT be hard code. It should be relative to the ENV(test, pre-prod,..)
+				-> if failed, Dev need to fix.
+			-> Deployed NEXT environment(Test, ...) -- CD
+Servers: 	Via Github	
+	Dev : Team : Developer Code, UNIT Testing(by Developers). Code is Promoted/Deployed/Copy-Paste in Next env.
+	Test: Testing Team(Not Developers) - Test cases (Expected vs Actual), Test execution
+			- Defects/Bugs in Jira.
+		- Defects are tickets assigned to the Dev team - To fix the defects/issues.
+	Pre_Prod - UAT (User Acceptance Testing).
+		- Business Users (Product Owners)
+		- all the business rules are met or not.
+		- Defects (P1, P2) priorities
+	Production - Go LIVE
+###################################		
+	
+	
+	
